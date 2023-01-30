@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  php:
+    container_name: php
+    build:
+      context: .
+    ports:
+      - 7001:80
+    volumes:
+      - ./src:/var/www/html
+    restart: always
+    environment:
+      APACHE_DOCUMENT_ROOT: /var/www/html/public
