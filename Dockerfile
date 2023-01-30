@@ -13,6 +13,10 @@ RUN apt-get update \
     && php -r "if (hash_file('sha256', '$composer_path') === '$composer_hash') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('$composer_path'); } echo PHP_EOL;" \
     && php $composer_path
 
+# Install node.js v18
+RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
+RUN apt-get install -y nodejs
+
 RUN apt-get -y install libzip-dev vim \
     && docker-php-ext-install zip
 
