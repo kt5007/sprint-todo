@@ -18,5 +18,5 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/user', [UserController::class, 'index']);
-Route::post('/user/registration', [UserController::class, 'register'])->name('user.registration.submit');
+Route::get('/user', [UserController::class, 'index'])->name('user.index');
+Route::post('/user/register', [UserController::class, 'register'])->name('user.register');

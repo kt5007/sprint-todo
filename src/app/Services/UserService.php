@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use App\Services;
 use Illuminate\Support\Collection;
 use DB;
@@ -9,10 +10,20 @@ use Illuminate\Http\Request;
 
 class UserService
 {
-    // userを1人新規作成
-    public function register(Request $request): void
+    // ユーザーモデルを使用してユーザーを登録
+    public function getActiveUsers()
     {
-        $request->username;
-        
+        $activeUsers = User::whereNull('deleted_at')->get();
+        return $activeUsers;
+    }
+
+    // ユーザーモデルを使用してユーザーを登録
+    public function registerUser($userData)
+    {
+        $user = new User();
+        $user->fill($userData);
+        $user->save();
+
+        return $user;
     }
 }

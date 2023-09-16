@@ -23,13 +23,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for ($i = 0; $i < 100; $i++)
+                    @foreach($activeUsers as $activeUser)
                         <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
+                            <th scope="row">{{ $activeUser->id }}</th>
+                            <td>{{ $activeUser->name }}</td>
                             <td>Otto</td>
                         </tr>
-                    @endfor
+                    @endforeach
                 </tbody>
             </table>
         </div>
