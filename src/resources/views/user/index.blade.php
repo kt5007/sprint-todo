@@ -19,11 +19,15 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($activeUsers as $activeUser)
+                    @foreach ($activeUsers as $activeUser)
                         <tr>
                             <th scope="row">{{ $activeUser->id }}</th>
                             <td>{{ $activeUser->name }}</td>
-                            <td>Otto</td>
+                            <td>
+                                <button type="button" class="btn btn-danger" onclick="deleteUser({{ $activeUser->id }})">
+                                    削除
+                                </button>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
