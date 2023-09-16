@@ -8,7 +8,7 @@
             </div>
             <div class="modal-body">
                 <!-- Add your user registration form here -->
-                <form method="post" action="{{ route('user.registration.submit') }}">
+                <form method="post" action="{{ route('user.register') }}">
                     @csrf
                     <div class="form-group">
                         <label for="username">ユーザー名</label>
