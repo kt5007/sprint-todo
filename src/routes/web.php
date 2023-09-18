@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\SprintController;
+use App\Http\Controllers\UserAvailabilityController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,3 +22,7 @@ Route::get('/', function () {
 
 Route::get('/user', [UserController::class, 'index'])->name('user.index');
 Route::post('/user/register', [UserController::class, 'register'])->name('user.register');
+
+Route::get('/user_availability', [UserAvailabilityController::class, 'index'])->name('user_availability.index');
+
+Route::get('/sprint', [SprintController::class, 'index'])->name('sprint.index');
