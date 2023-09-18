@@ -26,3 +26,4 @@ Route::post('/user/register', [UserController::class, 'register'])->name('user.r
 Route::get('/user_availability', [UserAvailabilityController::class, 'index'])->name('user_availability.index');
 
 Route::get('/sprint', [SprintController::class, 'index'])->name('sprint.index');
+Route::get('/sprint/register', [SprintController::class, 'register'])->name('sprint.register');

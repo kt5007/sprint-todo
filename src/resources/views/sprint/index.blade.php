@@ -36,5 +36,5 @@
             </table>
         </div>
     </div>
-    {{-- @include('user.sprint_registration_modal') --}}
+    @include('sprint.sprint_registration_modal')
 @endsection
