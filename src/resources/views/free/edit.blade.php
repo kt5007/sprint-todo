@@ -1,8 +1,8 @@
-@extends('adminlte::page')
-@section('title', 'Taskful')
-@section('content_header')
-<h1 class="text-center mb-3 mt-3">各メンバーの空き時間の編集 (h)</h1>
-@stop
+@extends('layout.master')
+
+@section('title', 'Home')
+@section('guide', '各メンバーの空き時間の編集 (h)')
+
 @section('content')
 
 <form action="{{url('/free/update')}}" method="post">
@@ -46,7 +46,7 @@
     </div>
 </form>
 
-@stop
+@endsection
 @section('css')
 <link rel="stylesheet" href="/css/admin_custom.css">
 @stop
