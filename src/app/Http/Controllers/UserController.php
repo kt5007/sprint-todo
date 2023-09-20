@@ -20,10 +20,34 @@ class UserController extends Controller
 
     public function index()
     {
-        $active_users = User::all();
-        return view('user.index', compact('active_users'));
+        $activeUsers = $this->user_service->getActiveUsers();
+        return view('user.index', ['activeUsers' => $activeUsers]);
     }
+    // ユーザー登録フォームを処理するアクション
+    public function register(Request $request)
+    {
+        // フォームから送信されたデータを取得
+        $user_name = $request->input('username');
+        $userData = [
+            'name' => $user_name
+        ];
 
+        // データを処理するロジック
+        $user = $this->user_service->registerUser($userData);
+
+        $coming_user_id =
+        DB::table('users')
+        ->select('id')
+        ->orderBy('id')
+        ->get()
+        ->last()
+        ->id;
+
+        $this->template_service->insertNewUserToTemplate($coming_user_id);
+
+        // ユーザー登録が成功した場合のリダイレクト先を設定
+        return redirect()->route('user.index')->with('success', 'ユーザーが登録されました。');
+    }
     public function user_create(Request $request)
     {
         $data = $request->all();

@@ -1,11 +1,10 @@
-@extends('adminlte::page')
+@extends('layout.master')
 
-@section('content_header')
-<h1 class="text-center mt-3">各メンバーの空き時間一覧 (h)</h1>
-@stop
+@section('title', 'Home')
+@section('guide', '各メンバーの空き時間一覧 (h)')
 
 @if (is_null($freetime_data->first())) ユーザーを作成してください
-@else
+@endif
 
 @section('content')
 <div class="mt-4 mb-3">
@@ -69,8 +68,8 @@
     <a href="{{ url('free/edit?sprint=' . $sprint_id) }}" class="btn btn-primary btn-lg">空き時間を編集する</a>
 </div>
 
-@stop
-@endif
+@endsection
+{{-- @endif --}}
 
 @section('css')
 <link rel="stylesheet" href="/css/admin_custom.css">
