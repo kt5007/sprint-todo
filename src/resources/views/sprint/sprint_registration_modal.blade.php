@@ -11,12 +11,12 @@
                 <form method="post" action="{{ route('sprint.register') }}">
                     @csrf
                     <div class="form-group">
-                        <label for="start_date">開始日</label>
-                        <input type="date" class="form-control" name="start_date" required>
+                        <label for="sprint_start">開始日</label>
+                        <input type="date" class="form-control" name="sprint_start" required>
                     </div>
                     <div class="form-group">
-                        <label for="end_date">終了日</label>
-                        <input type="date" class="form-control" name="end_date" required>
+                        <label for="sprint_end">終了日</label>
+                        <input type="date" class="form-control" name="sprint_end" required>
                     </div>
                     <div class="mt-2">
                         次のメンバーでスプリントが作成されます。<br>
