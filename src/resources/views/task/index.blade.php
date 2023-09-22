@@ -39,41 +39,47 @@
         </ul>
     </div>
 
-    <table class="table text-center">
-        <tr class="table-active">
-            <th>状態</th>
-            <th>メンバー</th>
-            <th>残りタスク工数</th>
-            <th>残り空き時間</th>
-        </tr>
-        </thead>
-        <tbody id="free-time-table">
-            <tr id="user_0" class="">
-                <td class="status-total">
-                    <span
-                        class="badge badge-pill {{ $team_total_free_time >= $team_total_task_time ? 'badge-success' : 'badge-warning' }}">
-                        {{ $team_total_free_time >= $team_total_task_time ? '順調' : '遅延' }}
-                    </span>
-                </td>
-                <td class="status-total">全体</td>
-                <td class="status-total">{{ $team_total_task_time }}</td>
-                <td class="status-total">{{ $team_total_free_time }}</td>
-            </tr>
-            @foreach ($users as $user)
-            <tr id="user_{{ $user->id }}">
-                <td><button class="handle">:</button>
-                    <span
-                        class="badge badge-pill {{ $user_total_free_times[$user->id] >= $user_total_task_times[$user->id] ? 'badge-success' : 'badge-warning' }}">
-                        {{ $user_total_free_times[$user->id] >= $user_total_task_times[$user->id] ? '順調' : '遅延' }}
-                    </span>
-                </td>
-                <td>{{ $user->name }}</td>
-                <td>{{ $user_total_task_times[$user->id] }}</td>
-                <td>{{ $user_total_free_times[$user->id] }}</td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+    <div class="card p-2">
+        <div class="card-body">
+            <table class="table table-hover table-sm text-center">
+                <thead class="thead-light">
+                    <tr class="table-secondary">
+                        <th>状態</th>
+                        <th>メンバー</th>
+                        <th>残りタスク工数</th>
+                        <th>残り空き時間</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <span
+                                class="badge {{ $team_total_free_time >= $team_total_task_time ? 'bg-success' : 'bg-warning' }}">
+                                {{ $team_total_free_time >= $team_total_task_time ? '順調' : '遅延' }}
+                            </span>
+                        </td>
+                        <td>全体</td>
+                        <td>{{ $team_total_task_time }}</td>
+                        <td>{{ $team_total_free_time }}</td>
+                    </tr>
+                    @foreach ($users as $user)
+                    <tr>
+                        <td>
+                            <span
+                                class="badge {{ $user_total_free_times[$user->id] >= $user_total_task_times[$user->id] ? 'bg-success' : 'bg-warning' }}">
+                                {{ $user_total_free_times[$user->id] >= $user_total_task_times[$user->id] ? '順調' : '遅延' }}
+                            </span>
+                        </td>
+                        <td>{{ $user->name }}</td>
+                        <td>{{ $user_total_task_times[$user->id] }}</td>
+                        <td>{{ $user_total_free_times[$user->id] }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 
     <table class="table table-hover mt-5" id="sort-table">
         <thead>
