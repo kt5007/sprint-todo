@@ -1,16 +1,16 @@
-@extends('adminlte::page')
-@section('plugins.ExcelTableFilter', true)
+@extends('layout.master')
+
+@section('title', 'Home')
+@section('guide', 'チームのタスク')
 
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-@if (empty($users))
-@section('content_header')
-<h1 class="text-center mt-3">チームのタスク</h1>
-<h2 class="text-center mt-3">ユーザーを登録してください</h1>
-    @stop
-    @else
-    @section('content_header')
-    <h1 class="text-center mt-3">チームのタスク / {{ $today }} 時点</h1>
-    @stop
+
+{{-- jquery --}}
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="{{ asset('js/excel-bootstrap-table-filter-bundle.js') }}"></script>
+<link rel="stylesheet" href="{{ asset('css/excel-bootstrap-table-filter-style.css') }}">
+
+
     @section('content')
     @include('task.copy_task_to_latest_sprint')
     <div class="page-header">
@@ -150,8 +150,7 @@
         </tbody>
     </table>
     </div>
-    @stop
-    @endif
+    @endsection
 
     {{-- @section('css')
     <link rel="stylesheet" href="/css/admin_custom.css">
