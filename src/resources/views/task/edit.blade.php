@@ -1,8 +1,6 @@
-@extends('adminlte::page')
-@section('title', 'Taskful')
-@section('content_header')
-<h1 class="text-center mt-3">タスクを編集</h1>
-@stop
+@extends('layout.master')
+@section('title', 'Home')
+@section('guide', 'タスクを編集')
 
 @section('content')
 <div class="container">
