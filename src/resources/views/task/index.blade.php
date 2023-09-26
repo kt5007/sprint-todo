@@ -59,8 +59,12 @@
                             </span>
                         </td>
                         <td>全体</td>
-                        <td>{{ $team_total_task_time }}</td>
-                        <td>{{ $team_total_free_time }}</td>
+                        <td>
+                            {{ $team_total_task_time }}
+                        </td>
+                        <td>
+                            {{ $team_total_free_time }}
+                        </td>
                     </tr>
                     @foreach ($users as $user)
                         <tr>
@@ -79,83 +83,81 @@
             </table>
         </div>
     </div>
-
-    <table class="table table-hover table-sm text-center" id="sort-table">
-        <thead class="thead-light">
-            <tr class="table-secondary">
-                <th>状況</th>
-                <th>最終更新</th>
-                <th>分類</th>
-                <th>タスク内容</th>
-                <th>担当者</th>
-                <th>時間内訳</th>
-                <th>
-                    <span class="badge bg-primary">合計 {{ $tasks->sum('estimated_sum_time') }} h</span>
-                    <br>想定(h)
-                </th>
-                <th>
-                    <span class="badge bg-primary">合計 {{ $tasks->sum('actual_time') }} h</span>
-                    <br>実績(h)
-                </th>
-                <th>操作</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($tasks as $task)
-                <tr>
-                    <td><span
-                            class="badge
-                                @if ($task->status_num == 3) bg-secondary
-                                @elseif ($task->status_num == 2) bg-warning
-                                @else bg-success @endif">
-                            {{ $task->status_label }} </span></td>
-                    <td>
-                        @isset($task->updated_at)
-                            {{ date('Y-n-j', strtotime($task->updated_at)) }}<br>
-                            {{ date('G:i:s', strtotime($task->updated_at)) }}
-                        @endisset
-                    </td>
-                    <td>
-                        {{ $task->category_name }}
-                    </td>
-                    <td>
-                        @if (isset($task->trello_url))
-                            <a href="{{ $task->trello_url }}" target="_blank">{{ $task->title }}</a>
-                        @else
-                            {{ $task->title }}
-                        @endif
-                    <td>
-                        @foreach ($task->members as $member)
-                            {{ $member . ' ' }}
-                        @endforeach
-                    </td>
-                    <td>
-                        @if (count($task->members) != 0)
-                            {{ $task->estimated_time . 'h × ' . count($task->members) }}
-                        @endif
-                    </td>
-                    <td>
-                        {{ $task->estimated_sum_time ?? '-' }}
-                    </td>
-                    <td>
-                        {{ $task->actual_time ?? '-' }}
-                    </td>
-                    <td class="d-flex align-items-center justify-content-center ">
-                        <a href="{{ url('/task/edit/' . $task->id) }} " class="btn btn-outline-dark btn-sm">編集</a>
-                        <form action='task/destroy/{{ $task->id }}' method='post' class="mb-0">
-                            @csrf
-                            <input type="submit" value='削除' class="btn btn-outline-danger btn-sm"
-                                onclick='return confirm("削除しますか？");'>
-                        </form>
-                        <button id="task-id-{{ $task->id }}" data-task-title="{{ $task->title }}" type="button"
-                            class="btn btn-outline-info btn-sm" data-toggle="modal" data-target="#task-copy">削除</button>
-                        <button id="task-id-{{ $task->id }}" data-task-title="{{ $task->title }}" type="button"
-                            class="btn btn-outline-info btn-sm" data-toggle="modal" data-target="#task-copy">複製</button>
-                    </td>
+    <div class="card p-2 mt-3">
+        <table class="table table-hover table-sm text-center" id="sort-table">
+            <thead class="thead-light">
+                <tr class="table-secondary">
+                    <th>状況</th>
+                    <th>最終更新</th>
+                    <th>分類</th>
+                    <th>タスク内容</th>
+                    <th>担当者</th>
+                    <th>時間内訳</th>
+                    <th>
+                        <span class="badge bg-primary">合計 {{ $tasks->sum('estimated_sum_time') }} h</span>
+                        <br>想定(h)
+                    </th>
+                    <th>
+                        <span class="badge bg-primary">合計 {{ $tasks->sum('actual_time') }} h</span>
+                        <br>実績(h)
+                    </th>
+                    <th>操作</th>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach ($tasks as $task)
+                    <tr>
+                        <td><span
+                                class="badge
+                                    @if ($task->status_num == 3) bg-secondary
+                                    @elseif ($task->status_num == 2) bg-warning
+                                    @else bg-success @endif">
+                                {{ $task->status_label }} </span></td>
+                        <td>
+                            @isset($task->updated_at)
+                                {{ date('Y-n-j', strtotime($task->updated_at)) }}<br>
+                                {{ date('G:i:s', strtotime($task->updated_at)) }}
+                            @endisset
+                        </td>
+                        <td>
+                            {{ $task->category_name }}
+                        </td>
+                        <td>
+                            @if (isset($task->trello_url))
+                                <a href="{{ $task->trello_url }}" target="_blank">{{ $task->title }}</a>
+                            @else
+                                {{ $task->title }}
+                            @endif
+                        <td>
+                            @foreach ($task->members as $member)
+                                {{ $member . ' ' }}
+                            @endforeach
+                        </td>
+                        <td>
+                            @if (count($task->members) != 0)
+                                {{ $task->estimated_time . 'h × ' . count($task->members) }}
+                            @endif
+                        </td>
+                        <td>
+                            {{ $task->estimated_sum_time ?? '-' }}
+                        </td>
+                        <td>
+                            {{ $task->actual_time ?? '-' }}
+                        </td>
+                        <td class="d-flex align-items-center justify-content-center ">
+                            <a href="{{ url('/task/edit/' . $task->id) }} " class="btn btn-outline-dark btn-sm">編集</a>
+                            <form action='task/destroy/{{ $task->id }}' method='post' class="mb-0">
+                                @csrf
+                                <input type="submit" value='削除' class="btn btn-outline-danger btn-sm"
+                                    onclick='return confirm("削除しますか？");'>
+                            </form>
+                            <button id="task-id-{{ $task->id }}" data-task-title="{{ $task->title }}" type="button"
+                                class="btn btn-outline-info btn-sm" data-toggle="modal" data-target="#task-copy">複製</button>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 @endsection
 
