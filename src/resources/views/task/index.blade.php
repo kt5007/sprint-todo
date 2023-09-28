@@ -3,42 +3,36 @@
 @section('title', 'Home')
 @section('guide', 'チームのタスク')
 
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-
-{{-- jquery --}}
-<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
-<script src="{{ asset('js/excel-bootstrap-table-filter-bundle.js') }}"></script>
-<link rel="stylesheet" href="{{ asset('css/excel-bootstrap-table-filter-style.css') }}">
-
-
 @section('content')
     @include('task.copy_task_to_latest_sprint')
-    <div class="page-header">
-        <div class="btn-splint">
-            <div class="inner">
-                <a href=" {{ url('task?sprint=' . $previous_next_sprint_ids[0]) }}" class="arrow_l"></a>
-                <div class="sprint-date">
-                    {{ date('y/m/d', strtotime($start_and_end[0])) . ' ~ ' . date('y/m/d', strtotime($start_and_end[1])) }}
-                    <br>
-                    @if ($is_current_sprint)
-                        <div class="inner">
-                            <span class="badge badge-pill badge-primary">今回のスプリント</span>
-                        </div>
-                    @endif
+    <nav aria-label="sprint-pagenation">
+        <ul class="pagination">
+            <li class="page-item align-middle">
+                <a class="page-link" href="{{ url('task?sprint=' . $previous_next_sprint_ids[0]) }}"><span
+                        aria-hidden="true">&laquo;</span></a>
+            </li>
+            <li class="page-item mx-3 align-middle text-center">
+                {{ date('y/m/d', strtotime($start_and_end[0])) }} ~ {{ date('y/m/d', strtotime($start_and_end[1])) }} <br>
+                @if ($is_current_sprint)
+                    <span class="badge bg-info">今回のスプリント</span>
+                @else
                     <a href=" {{ url('/task/latest_sprint') }}" class="text-center">最新スプリントへ移動</a>
-                </div>
-                <a href=" {{ url('task?sprint=' . $previous_next_sprint_ids[1]) }}" class="arrow_r"></a>
-            </div>
-        </div>
-    </div>
-    <div class="mt-4 mb-3">
+                @endif
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="{{ url('task?sprint=' . $previous_next_sprint_ids[1]) }}">
+                    <span aria-hidden="true">
+                        &raquo;
+                    </span>
+                </a>
+            </li>
+        </ul>
         <ul>
             <div class=" mb-4">
                 <a href="{{ url('/task/create?sprint=' . $sprint_id) }} " class="btn btn-primary btn-lg">新規作成</a>
             </div>
         </ul>
-    </div>
-
+    </nav>
     <div class="card p-2">
         <div class="card-body">
             <table class="table table-hover table-sm text-center">
@@ -83,6 +77,22 @@
             </table>
         </div>
     </div>
+
+    <div class="form-group">
+        <label>担当者フィルター:</label><br>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input user-checkbox" type="checkbox" value="all" id="user_all">
+            <label class="form-check-label" for="user_all">全て</label>
+        </div>
+        @foreach ($users as $user)
+            <div class="form-check form-check-inline">
+                <input class="form-check-input user-checkbox" type="checkbox" value="{{ $user->id }}"
+                    id="user_{{ $user->id }}">
+                <label class="form-check-label" for="user_{{ $user->id }}">{{ $user->name }}</label>
+            </div>
+        @endforeach
+    </div>
+
     <div class="card p-2 mt-3">
         <table class="table table-hover table-sm text-center" id="sort-table">
             <thead class="thead-light">
@@ -106,13 +116,14 @@
             </thead>
             <tbody>
                 @foreach ($tasks as $task)
-                    <tr>
+                    <tr data-user-ids="{{ implode(',', $task->members_ids) }}">
                         <td><span
                                 class="badge
                                     @if ($task->status_num == 3) bg-secondary
                                     @elseif ($task->status_num == 2) bg-warning
                                     @else bg-success @endif">
-                                {{ $task->status_label }} </span></td>
+                                {{ $task->status_label }} </span>
+                        </td>
                         <td>
                             @isset($task->updated_at)
                                 {{ date('Y-n-j', strtotime($task->updated_at)) }}<br>
@@ -145,7 +156,8 @@
                             {{ $task->actual_time ?? '-' }}
                         </td>
                         <td class="d-flex align-items-center justify-content-center ">
-                            <a href="{{ url('/task/edit/' . $task->id) }} " class="btn btn-outline-dark btn-sm">編集</a>
+                            <a href="{{ route('task.edit', ['task_id' => $task->id]) }}"
+                                class="btn btn-outline-dark btn-sm">編集</a>
                             <form action='task/destroy/{{ $task->id }}' method='post' class="mb-0">
                                 @csrf
                                 <input type="submit" value='削除' class="btn btn-outline-danger btn-sm"
@@ -161,325 +173,37 @@
     </div>
 @endsection
 
-{{-- @section('css')
-    <link rel="stylesheet" href="/css/admin_custom.css">
-    @stop --}}
-
-<style>
-    .arrow_r,
-    .arrow_l {
-        position: relative;
-        display: inline-block;
-        padding-left: 12px;
-        color: #333;
-        text-decoration: none;
-    }
-
-    .arrow_r:before {
-        content: '';
-        width: 0;
-        height: 0;
-        border-style: solid;
-        border-width: 12px 0 12px 16px;
-        border-color: transparent transparent transparent #333;
-        position: absolute;
-        top: 50%;
-        left: 0;
-        margin-top: -6px;
-    }
-
-    .arrow_l:before {
-        content: '';
-        width: 0;
-        height: 0;
-        border-style: solid;
-        border-width: 12px 0 12px 16px;
-        border-color: transparent transparent transparent #333;
-        position: absolute;
-        top: 50%;
-        left: 0;
-        margin-top: -6px;
-        transform: rotate(180deg);
-    }
-
-    .btn-splint {
-        width: 300px;
-        height: 20px;
-        margin: 0 0 0 auto;
-    }
-
-    .inner {
-        /* padding-top: 20px; */
-        display: flex;
-        justify-content: space-evenly;
-    }
-
-    .table tr:hover td {
-        background-color: #87cefa;
-    }
-
-    td.status-total {
-        border-bottom: 1px solid black;
-        font-weight: bold;
-    }
-
-    tr.nowrpap-header {
-        white-space: nowrap;
-    }
-
-    td {
-        font-size: small;
-    }
-
-    th {
-        font-size: small;
-    }
-
-    td.assignment {
-        word-break: keep-all;
-    }
-
-    td.td-category {
-        white-space: nowrap;
-        font-size: small;
-    }
-
-    td.cell-time {
-        text-align: left;
-    }
-
-    .sprint-date,
-    .current-splint-badge,
-    .thead-btn {
-        text-align: center;
-    }
-
-    .btn-wrapp {
-        display: flex;
-        flex-direction: column;
-        font: smaller;
-        align-items: center;
-        white-space: nowrap;
-    }
-
-    .tab {
-        position: relative;
-        width: 100%;
-        overflow: hidden;
-    }
-
-    input.memo-accordion {
-        position: absolute;
-        opacity: 0;
-        z-index: -1;
-    }
-
-    label {
-        position: relative;
-        display: block;
-        color: #1e90ff;
-        line-height: 2;
-        cursor: pointer;
-    }
-
-    .task-comment {
-        margin-left: 1.5em;
-        font-size: smaller;
-        max-height: 0;
-        overflow: hidden;
-        -webkit-transition: max-height .35s;
-        -o-transition: max-height .35s;
-        transition: max-height .35s;
-    }
-
-    .tab-content {
-        max-height: 0;
-        overflow: hidden;
-        -webkit-transition: max-height .35s;
-        -o-transition: max-height .35s;
-        transition: max-height .35s;
-        color: #000;
-    }
-
-    input.memo-accordion:checked~.task-comment {
-        max-height: 100%;
-    }
-
-    /* Icon */
-    label::after {
-        position: absolute;
-        left: 4.2em;
-        top: -0.6em;
-        display: block;
-        width: 3em;
-        height: 3em;
-        line-height: 3;
-        text-align: center;
-        -webkit-transition: all .35s;
-        -o-transition: all .35s;
-        transition: all .35s;
-    }
-
-    input.memo-accordion[type=checkbox]+label::after {
-        content: "+";
-    }
-
-    input.memo-accordion[type=radio]+label::after {
-        content: "\25BC";
-    }
-
-    input.memo-accordion[type=checkbox]:checked+label::after {
-        transform: rotate(315deg);
-    }
-
-    input.memo-accordion[type=radio]:checked+label::after {
-        transform: rotateX(180deg);
-    }
-</style>
-@section('js')
+@push('scripts')
     <script>
-        $('#sort-table').excelTableFilter({
-            columnSelector: '.sort-apply', // (optional) if present, will only select <th> with specified class
-            sort: true, // (optional) default true
-            search: true // (optional) default true
-            // captions: Object                    // (optional) default { a_to_z: 'A to Z', z_to_a: 'Z to A', search: 'Search', select_all: 'Select All' }
-        });
-        // $('table').excelTableFilter();
-    </script>
-    <script src="{{ asset('js/task.js') }}"></script>
-    <script>
-        function getCookie(name) {
-            let matches = document.cookie.match(new RegExp(
-                "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-            ));
-            return matches ? decodeURIComponent(matches[1]) : undefined;
-        }
+        // チェックボックスが変更されたときに実行される処理
+        var checkboxes = document.querySelectorAll('.user-checkbox');
 
-        function getCookieArray() {
-            var arr = new Array();
-            if (document.cookie != '') {
-                var tmp = document.cookie.split('; ');
-                for (var i = 0; i < tmp.length; i++) {
-                    var data = tmp[i].split('=');
-                    arr[data[0]] = decodeURIComponent(data[1]);
-                }
-            }
-            return arr;
-        }
+        checkboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                var selectedUserIds = [];
+                checkboxes.forEach(function(cb) {
+                    if (cb.checked) {
+                        selectedUserIds.push(cb.value);
+                    }
+                });
 
-        const checkBox = document.querySelector("#person .checkbox-container");
-        const checkBoxList = document.querySelectorAll("#person .checkbox-container .dropdown-filter-item");
-        window.onload = function() {
+                var tableRows = document.querySelectorAll('#sort-table tbody tr');
 
-            const cookies = getCookieArray();
-            const freeTimeTableTr = document.querySelectorAll('#free-time-table tr');
-            const user_ids = cookies['user_ids'].split(',');
-
-            let newFreeTimeTableTrs = [];
-            const node = document.getElementById("free-time-table");
-            user_ids.forEach(user_id => {
-                newFreeTimeTableTrs.push(document.getElementById(user_id));
-                node.removeChild(document.getElementById(user_id));
-            });
-
-            newFreeTimeTableTrs.forEach(tr => {
-                node.appendChild(tr);
-            });
-
-            // console.log(Object.keys(cookies));
-            if (cookies["Select All"] == "true") {
-                console.log('select all');
-            } else {
-                const filterTr = document.querySelectorAll("#sort-table tbody tr");
-                for (let tr = 0; tr < filterTr.length; tr++) {
-                    const member = filterTr[tr].querySelector(".members").textContent.replace(/\s/g, '');
-                    filterTr[tr].style.display = "none";
-                }
-                for (let index = 0; index < checkBoxList.length; index++) {
-                    const element = checkBoxList[index].querySelector("input[type=checkbox]");
-                    element.checked = false;
-                }
-                for (let index = 0; index < checkBoxList.length; index++) {
-                    const element = checkBoxList[index].querySelector("input[type=checkbox]");
-                    Object.entries(cookies).forEach(([key, value]) => {
-                        // console.log(key);
-                        console.log(element.checked);
-                        if (key == element.value) {
-                            if (value == 'true') {
-                                element.checked = true;
-                            }
-                            // console.log(element.value);
-                            // console.log(value);
-                            // console.log(element.checked);
-                            for (let tr = 0; tr < filterTr.length; tr++) {
-                                const member = filterTr[tr].querySelector(".members").textContent.replace(/\s/g,
-                                    '');
-                                // console.log(member);
-                                if (key.replace(/\s/g, '') == member && value == 'true') {
-                                    // console.log(member, key.replace(/\s/g,''));
-                                    // console.log(element.checked);
-                                    filterTr[tr].style.display = "";
-                                }
-                            }
-
-                            // console.log(filterTr);
-                        }
+                tableRows.forEach(function(row) {
+                    var userIds = row.getAttribute('data-user-ids').split(',').map(function(id) {
+                        return id.trim();
                     });
-                    // if(cookies. == element.value);
-                    // const value = getCookie(element.value)
-                    // element.value;
-                    // element.checked = false;
-                    // console.log(element);
-                    // display: none;
-                }
-            }
-            // var str  = "";
-            // str += "クッキーで保存されている内容 ： " + getCookie() + "<br>\n";
-            // document.getElementById("dat").innerHTML = str;
-        }
 
-        checkBox.addEventListener('click', function() {
-            let checkList = document.querySelectorAll("#person input[type=checkbox]");
-            checkList.forEach(element => {
-                // console.log(element.checked);
-                document.cookie = element.value + '=' + element.checked;
+                    // ユーザーが選択した条件（ユーザーID）をすべて含む行を表示
+                    if (selectedUserIds.every(function(id) {
+                            return userIds.includes(id);
+                        })) {
+                        row.style.display = ''; // 表示
+                    } else {
+                        row.style.display = 'none'; // 非表示
+                    }
+                });
             });
-            // console.log('click');
-            // console.log(getCookie('山崎賢人'));
-        }, false);
-        // console.log(document.cookie);
-
-        const sortElement = document.getElementById('free-time-table');
-        new Sortable(sortElement, {
-            animation: 150,
-            handle: '.handle',
-            ghostClass: 'blue-background-class',
         });
-
-        // window.onload = function(){
-        //     const cookies = getCookieArray();
-        //     const freeTimeTableTr= document.querySelectorAll('#free-time-table tr');
-        //     const user_ids = cookies['user_ids'].split(',');
-
-        //     let newFreeTimeTableTrs = [];
-        //     const node = document.getElementById("free-time-table");
-        //     user_ids.forEach(user_id => {
-        //         newFreeTimeTableTrs.push(document.getElementById(user_id));
-        //         node.removeChild(document.getElementById(user_id));
-        //     });
-
-        //     newFreeTimeTableTrs.forEach(tr => {
-        //         node.appendChild(tr);
-        //     });
-        // }
-
-        window.onunload = function() {
-            const freeTimeTableTr = document.querySelectorAll('#free-time-table tr');
-            let user_ids = [];
-            for (let tr = 0; tr < freeTimeTableTr.length; tr++) {
-                user_ids.push(freeTimeTableTr[tr].id);
-            }
-            document.cookie = 'user_ids=' + user_ids;
-        }
     </script>
-@endsection
+@endpush

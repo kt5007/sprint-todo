@@ -19,20 +19,20 @@ class TaskService
 
         $allocaton_data =
             DB::table('allocations')
-            ->select('users.name', 'allocations.task_id')
+            ->select('users.name', 'allocations.task_id', 'allocations.user_id')
             ->join('users', 'users.id', '=', 'allocations.user_id')
             ->get();
-
         foreach ($task_data as $task) {
             $task_id = $task->id;
             $assined_members = [];
             if ($allocaton_data->contains('task_id', $task_id)) {
                 $assined_members = $allocaton_data->where('task_id', '=', $task_id)->pluck('name')->toArray();
+                $assined_members_ids = $allocaton_data->where('task_id', '=', $task_id)->pluck('user_id')->toArray();
             }
             //各タスクに関するcollectionに、担当者の情報を追加
             $task->members = $assined_members;
+            $task->members_ids = $assined_members_ids;
         }
-
         foreach ($task_data as $task) {
             $task_status_definition = [1 => '仕掛中', 2 => '未着手', 3 => '完了'];
             if ($task->task_status == 1) {
