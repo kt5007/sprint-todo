@@ -79,7 +79,7 @@
     </div>
 
     <div class="form-group">
-        <label>担当者フィルター:</label><br>
+        <label>担当者フィルター：</label>
         <div class="form-check form-check-inline">
             <input class="form-check-input user-checkbox" type="checkbox" value="all" id="user_all">
             <label class="form-check-label" for="user_all">全て</label>
@@ -178,32 +178,57 @@
         // チェックボックスが変更されたときに実行される処理
         var checkboxes = document.querySelectorAll('.user-checkbox');
 
+        // 「全て」チェックボックス
+        var selectAllCheckbox = document.querySelector('#user_all');
+
+        selectAllCheckbox.addEventListener('change', function() {
+            checkboxes.forEach(function(cb) {
+                cb.checked = selectAllCheckbox.checked;
+            });
+
+            updateTableVisibility();
+        });
+
         checkboxes.forEach(function(checkbox) {
             checkbox.addEventListener('change', function() {
-                var selectedUserIds = [];
-                checkboxes.forEach(function(cb) {
-                    if (cb.checked) {
-                        selectedUserIds.push(cb.value);
-                    }
-                });
-
-                var tableRows = document.querySelectorAll('#sort-table tbody tr');
-
-                tableRows.forEach(function(row) {
-                    var userIds = row.getAttribute('data-user-ids').split(',').map(function(id) {
-                        return id.trim();
-                    });
-
-                    // ユーザーが選択した条件（ユーザーID）をすべて含む行を表示
-                    if (selectedUserIds.every(function(id) {
-                            return userIds.includes(id);
-                        })) {
-                        row.style.display = ''; // 表示
-                    } else {
-                        row.style.display = 'none'; // 非表示
-                    }
-                });
+                updateTableVisibility();
             });
         });
+
+        function updateTableVisibility() {
+            var selectedUserIds = [];
+            checkboxes.forEach(function(cb) {
+                if (cb.checked && cb.value !== 'all') {
+                    selectedUserIds.push(cb.value);
+                }
+            });
+
+            checkboxes.forEach(function(cb) {
+                if (cb.value === 'all') {
+                    cb.checked = selectedUserIds.length === checkboxes.length - 1;
+                }
+            });
+
+            var tableRows = document.querySelectorAll('#sort-table tbody tr');
+
+            tableRows.forEach(function(row) {
+                var userIds = row.getAttribute('data-user-ids').split(',').map(function(id) {
+                    return id.trim();
+                });
+
+                // 「全て」チェックボックスがチェックされているか、選択されたユーザーIDを含む行を表示
+                if (selectAllCheckbox.checked || selectedUserIds.length === 0 || selectedUserIds.every(function(
+                    id) {
+                        return userIds.includes(id);
+                    })) {
+                    row.style.display = ''; // 表示
+                } else {
+                    row.style.display = 'none'; // 非表示
+                }
+            });
+        }
+
+        // 初回ページ読み込み時にも実行
+        updateTableVisibility();
     </script>
 @endpush
