@@ -3,10 +3,18 @@
 @section('title', 'スプリント')
 
 @section('content')
+    <div class="mt-4 mb-3">
+        <a href="{{ url('sprint/template') }}">
+            <button type="button" class="btn btn-outline-secondary" data-toggle="modal">
+                スプリントのテンプレートを確認・編集
+            </button>
+        </a>
+    </div>
     <div class="card p-2">
         <div class="card-body">
             <div class="mb-3">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sprintRegistrationModal">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#sprintRegistrationModal">
                     スプリント新規作成
                 </button>
             </div>

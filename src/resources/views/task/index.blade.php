@@ -164,7 +164,9 @@
                                     onclick='return confirm("削除しますか？");'>
                             </form>
                             <button id="task-id-{{ $task->id }}" data-task-title="{{ $task->title }}" type="button"
-                                class="btn btn-outline-info btn-sm" data-toggle="modal" data-target="#task-copy">複製</button>
+                                class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#task-copy">
+                                複製
+                            </button>
                         </td>
                     </tr>
                 @endforeach
@@ -218,7 +220,7 @@
 
                 // 「全て」チェックボックスがチェックされているか、選択されたユーザーIDを含む行を表示
                 if (selectAllCheckbox.checked || selectedUserIds.length === 0 || selectedUserIds.every(function(
-                    id) {
+                        id) {
                         return userIds.includes(id);
                     })) {
                     row.style.display = ''; // 表示
@@ -230,5 +232,20 @@
 
         // 初回ページ読み込み時にも実行
         updateTableVisibility();
+
+        document.addEventListener("DOMContentLoaded", function() {
+            let buttons = document.querySelectorAll('.btn');
+            buttons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    let id = this.getAttribute("id");
+                    let name = this.getAttribute("data-task-title");
+                    document.querySelector(".copy-message").innerHTML = name + "を最新のスプリントに複製しますか。";
+                    let res = id.replace(/[^0-9]/g, '');
+                    document.querySelector("#copy-task-form").setAttribute("action", "/task/copy/" +
+                        res);
+                    console.log('clicked');
+                });
+            });
+        });
     </script>
 @endpush

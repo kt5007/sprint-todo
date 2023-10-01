@@ -42,7 +42,8 @@ class SprintController extends Controller
         // ユーザー分✕期間
         $latest_sprint_id = $this->sprint_service->getLatestSprintid();
         $active_user_ids = User::pluck('id');
-        if (isset($data['apply_template'])) {
+
+        if (!isset($data['apply_template'])) {
             $this->free_template_service->applyFreetimeTemplate($latest_sprint_id);
         } else {
             $this->free_template_service->createZeroFreetimeData($latest_sprint_id, $active_user_ids);

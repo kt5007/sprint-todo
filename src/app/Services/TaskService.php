@@ -25,6 +25,7 @@ class TaskService
         foreach ($task_data as $task) {
             $task_id = $task->id;
             $assined_members = [];
+            $assined_members_ids = [];
             if ($allocaton_data->contains('task_id', $task_id)) {
                 $assined_members = $allocaton_data->where('task_id', '=', $task_id)->pluck('name')->toArray();
                 $assined_members_ids = $allocaton_data->where('task_id', '=', $task_id)->pluck('user_id')->toArray();
