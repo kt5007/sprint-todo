@@ -27,7 +27,8 @@ class FreeController extends Controller
 
         //存在しないsprint_idがパラメータで渡されたとき、スプリント一覧画面にリダイレクト
         if (!$is_valid) {
-            return redirect('/sprint');
+            $sprint_id = $this->sprint_service->getLatestSprintid();
+            // return redirect('/sprint');
         }
 
         // user_id, user_name のデータは $freetime_data に含まれている。

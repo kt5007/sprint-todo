@@ -93,6 +93,29 @@
         @endforeach
     </div>
 
+    <div class="form-group">
+        <label>状況フィルター　：</label>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input status-num-checkbox" type="checkbox" value="all" id="status_num_all">
+            <label class="form-check-label" for="status_num_all">全て</label>
+        </div>
+        @foreach ([1,2,3] as $status_num)
+            <div class="form-check form-check-inline">
+                <input class="form-check-input status_num" type="checkbox" value="{{ $status_num }}"
+                    id="status_{{ $status_num }}">
+                <label class="form-check-label" for="status_{{ $status_num }}">
+                @if($status_num == 1)
+                    進行中
+                @elseif($status_num == 2)
+                    未着手
+                @elseif($status_num == 3)
+                    完了
+                @endif
+                </label>
+            </div>
+        @endforeach
+    </div>
+
     <div class="card p-2 mt-3">
         <table class="table table-hover table-sm text-center" id="sort-table">
             <thead class="thead-light">
@@ -116,7 +139,7 @@
             </thead>
             <tbody>
                 @foreach ($tasks as $task)
-                    <tr data-user-ids="{{ implode(',', $task->members_ids) }}">
+                    <tr data-user-ids="{{ implode(',', $task->members_ids) }}" data-catgory-ids="{{ $task->category_name }}">
                         <td><span
                                 class="badge
                                     @if ($task->status_num == 3) bg-secondary
@@ -176,6 +199,14 @@
 @endsection
 
 @push('scripts')
+    <script src="{{ asset('js/excel-filter.js') }}"></script>
+    <script>
+        // クラスからインスタンスを生成
+        const userCheckbox = new UserCheckboxManager('.user-checkbox', '#user_all', 'data-user-ids');
+        
+        // 生成したインスタンスを使用
+        userCheckbox.someMethod(); // クラスのメソッドを呼び出す例
+    </script>
     <script>
         // チェックボックスが変更されたときに実行される処理
         var checkboxes = document.querySelectorAll('.user-checkbox');

@@ -35,8 +35,11 @@ class TaskController extends Controller
             $request->query('sprint', $this->sprint_service->currentSprintId());
         $is_valid = $this->sprint_service->isSprintIdValid($sprint_id);
         //存在しないsprint_idがパラメータで渡されたとき、スプリント一覧画面にリダイレクト
+
+
         if (!$is_valid) {
-            return redirect('/sprint');
+            $sprint_id = $this->sprint_service->getLatestSprintid();
+            // return redirect('/sprint');
         }
 
         $tasks = $this->task_service->getTaskData($sprint_id);

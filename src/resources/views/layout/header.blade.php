@@ -7,10 +7,10 @@
     </a>
 
     <ul class="nav nav-pills">
-        <li class="nav-item"><a href="#" class="nav-link text-white">ホーム</a></li>
-        <li class="nav-item"><a href="#" class="nav-link text-white">タスク</a></li>
-        <li class="nav-item"><a href="#" class="nav-link text-white">空き時間</a></li>
-        <li class="nav-item"><a href="#" class="nav-link text-white">スプリント</a></li>
-        <li class="nav-item"><a href="#" class="nav-link text-white">メンバー</a></li>
+        <li class="nav-item"><a href="/task" class="nav-link text-white">ホーム</a></li>
+        <li class="nav-item"><a href="/task" class="nav-link text-white">タスク</a></li>
+        <li class="nav-item"><a href="/free" class="nav-link text-white">空き時間</a></li>
+        <li class="nav-item"><a href="/sprint" class="nav-link text-white">スプリント</a></li>
+        <li class="nav-item"><a href="/user" class="nav-link text-white">メンバー</a></li>
     </ul>
 </header>
